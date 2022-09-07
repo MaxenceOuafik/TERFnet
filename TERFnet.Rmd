@@ -1,0 +1,20 @@
+---
+title: "TERFnet"
+author: "Ouafik R. Maxence"
+date: "2022-09-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Acquisition des tweets
+
+```{r login, include=FALSE}
+source("./scripts/login.R")
+```
+
+```{r load_data, include=FALSE}
+source("./scripts/load_data.R")
+```
