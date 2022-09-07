@@ -17,4 +17,5 @@ source("./scripts/login.R")
 
 ```{r load_data, include=FALSE}
 source("./scripts/load_data.R")
+source("./scripts/tweets_data_preparation.R")
 ```
