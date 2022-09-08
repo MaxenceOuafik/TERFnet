@@ -46,3 +46,10 @@ edgelist <- edgelist_label %>%
 
 write.csv(edgelist, file = "./output/edgelist.csv", row.names = F)
 write.csv(nodes, file = "./output/nodes.csv", row.names = F)
+
+rm(list = c("edgelist_label",
+            "from",
+            "to",
+            "retweets",
+            "tweets",
+            "i"))
