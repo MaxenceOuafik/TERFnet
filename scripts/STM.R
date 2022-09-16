@@ -50,6 +50,9 @@ custom_swords <- c("planning",
                    "dit",
                    "quun",
                    "quon",
+                   "quil",
+                   "quils",
+                   "mme",
                    "pf",
                    "homme",
                    "hommes",
@@ -64,6 +67,7 @@ tidy_tweets <- planning_full%>%
   left_join(select(named_communities, Label, modularity_class, outdegree), by = c("screen_name" = "Label")) %>%
   filter(!grepl("RT",full_text),
          !is.na(modularity_class),
+         !grepl('witheld', full_text),
          outdegree >= 1) %>%
   mutate(full_text = str_remove_all(full_text, remove_reg),
          tweet_id = row_number()) %>%
@@ -103,15 +107,18 @@ tidy_sparse <- tidy_tweets %>%
 
 # Le paramètre le plus important est le nombre de sujets contenus dans la modélisation. Sans forte idée a priori, 
 # j'ai entraîné le modèle avec une plusieurs possibilités, de 5 à 20 sujets afin de déterminer les plus adéquats
+# Après avoir déjà entraîné et testé le modèle plusieurs fois, j'avais pu constater que le nombre idéal
+# était aux alentours de 5-15, avec un meilleur compromis entre la cohérence sémantique et l'exclusivité
+# pour 10 ou 15. J'ai donc multiplié les résultats entre 10 et 15 pour essayer d'affiner les résultats
 
-set.seed(5)
 plan(multiprocess)
-models_evaluation <- data_frame(K = c(5, 10, 15, 20)) %>%
+models_evaluation <- data_frame(K = c(5, 10, 11, 12, 13, 14, 15, 20)) %>%
   mutate(topic_model = future_map(K, ~ stm(tidy_sparse,
                                            K = .,
                                            data = tidy_tweets %>% distinct(user, tweet_id, community) %>% arrange(community),
                                            prevalence = ~ community,
                                            init.type = "Spectral",
-                                           verbose = TRUE)))
+                                           verbose = TRUE),
+                                  .options = furrr_options(seed = 5)))
 
 save(models_evaluation, file = "./output/models_evaluation.RData")
