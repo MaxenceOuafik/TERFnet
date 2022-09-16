@@ -104,10 +104,13 @@ tidy_sparse <- tidy_tweets %>%
 # Le paramètre le plus important est le nombre de sujets contenus dans la modélisation. Sans forte idée a priori, 
 # j'ai entraîné le modèle avec une plusieurs possibilités, de 5 à 20 sujets afin de déterminer les plus adéquats
 
+set.seed(5)
 plan(multiprocess)
 models_evaluation <- data_frame(K = c(5, 10, 15, 20)) %>%
   mutate(topic_model = future_map(K, ~ stm(tidy_sparse,
                                            K = .,
+                                           data = tidy_tweets %>% distinct(user, tweet_id, community) %>% arrange(community),
+                                           prevalence = ~ community,
                                            init.type = "Spectral",
                                            verbose = TRUE)))
 
