@@ -26,10 +26,11 @@ k_result %>%
   ggplot(aes(K, Value, color = Metric)) +
   geom_line(size = 1.5, alpha = 0.7, show.legend = FALSE) +
   facet_wrap(~Metric, scales = "free_y") +
+  scale_x_continuous(breaks = 5:20) +
   labs(x = "K (number of topics)",
        y = NULL,
        title = "Diagnostics du modèle, par nombre de sujets",
-       subtitle = "Le nombre adéquat de sujets semble être aux alentours de 5-10")
+       subtitle = "Le nombre adéquat de sujets semble être aux alentours de 13-14")
 
 # La cohérence sémantique est une mesure qui est plus élevée lorsque les mots les plus probables dans un sujet
 # sont souvent présents en même temps dans un document. Cependant, vu le faible nombre de sujets dans cette analyse, 
@@ -38,7 +39,7 @@ k_result %>%
 
 k_result %>%
   select(K, exclusivity, semantic_coherence) %>%
-  filter(K %in% c(5, 10, 15)) %>%
+  filter(K %in% 10:15) %>%
   unnest() %>%
   mutate(K = as.factor(K)) %>%
   ggplot(aes(semantic_coherence, exclusivity, color = K)) +
@@ -46,12 +47,13 @@ k_result %>%
   labs(x = "Semantic coherence",
        y = "Exclusivity",
        title = "Comparaison entre cohérence sémantique et exclusivité",
-       subtitle = "Le meilleur compromis semble être 10 ou 15")
+       subtitle = "Le meilleur compromis semble être 13 ou 14")
 
-# Par facilité d'analyse, vu que la solution à 10 et 15 sujets semble la plus pertinente, celle à 10 sujets a été retenue
+# En prenant en compte les deux graphiques, la solution à 14 sujets a été retenue comme meilleur compromis entre 
+# les différentes valeurs diagnostiques
 
 topic_model <- k_result %>% 
-  filter(K == 15) %>% 
+  filter(K == 14) %>% 
   pull(topic_model) %>% 
   .[[1]]
 
@@ -105,10 +107,6 @@ gamma_terms %>%
 
 gamma_terms
 
-td_gamma %>%
-  filter(topic == 1) %>%
-  top_n(5)
-
 tweets <- planning_full%>% 
   left_join(select(named_communities, Label, modularity_class, outdegree), by = c("screen_name" = "Label")) %>%
   filter(!grepl("RT",full_text),
@@ -117,15 +115,10 @@ tweets <- planning_full%>%
   mutate(full_text = str_remove_all(full_text, remove_reg),
          tweet_id = as.character(row_number()))
 
-topic1_tweets <- td_gamma %>%
-  filter(topic == 9) %>%
-  top_n(5) %>%
-  left_join(select(tweets, full_text, tweet_id), by = c ("document" = "tweet_id"))
-
-
-effects <-
-  estimateEffect(
-    1:10 ~ community,
-    topic_model,
-    tidy_tweets %>% distinct(user, tweet_id, community) %>% arrange(community)
-  )
+topic_tweets <- list()
+for (i in 1:14) {
+  topic_tweets[[i]] <- td_gamma %>%
+    filter(topic == i) %>%
+    top_n(7, gamma) %>%
+    left_join(select(tweets, full_text, tweet_id), by = c ("document" = "tweet_id"))
+}
