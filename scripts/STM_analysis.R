@@ -51,7 +51,7 @@ k_result %>%
 # Par facilité d'analyse, vu que la solution à 10 et 15 sujets semble la plus pertinente, celle à 10 sujets a été retenue
 
 topic_model <- k_result %>% 
-  filter(K == 10) %>% 
+  filter(K == 15) %>% 
   pull(topic_model) %>% 
   .[[1]]
 
@@ -118,7 +118,7 @@ tweets <- planning_full%>%
          tweet_id = as.character(row_number()))
 
 topic1_tweets <- td_gamma %>%
-  filter(topic == 1) %>%
+  filter(topic == 9) %>%
   top_n(5) %>%
   left_join(select(tweets, full_text, tweet_id), by = c ("document" = "tweet_id"))
 
