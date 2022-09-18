@@ -10,9 +10,9 @@
 library(stm)
 library(furrr)
 
-
-plan(multiprocess)
-models_evaluation <- data_frame(K = c(5, 10, 11, 12, 13, 14, 15, 20)) %>%
+set.seed(5)
+plan(multisession)
+models_evaluation <- data_frame(K = c(10, 11, 12, 13, 14, 15)) %>%
   mutate(topic_model = future_map(K, ~ stm(tidy_sparse,
                                            K = .,
                                            data = tidy_tweets %>% distinct(user, tweet_id, community) %>% arrange(community),
