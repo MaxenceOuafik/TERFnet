@@ -1,3 +1,5 @@
+library(stm)
+library(furrr)
 # On commence par importer le modèle généré dans le script STM.R
 load("./output/models_evaluation.RData")
 
@@ -30,7 +32,7 @@ k_result %>%
   labs(x = "K (number of topics)",
        y = NULL,
        title = "Diagnostics du modèle, par nombre de sujets",
-       subtitle = "Le nombre adéquat de sujets semble être aux alentours de 13-14")
+       subtitle = "Le nombre adéquat de sujets semble être 13-15")
 
 # La cohérence sémantique est une mesure qui est plus élevée lorsque les mots les plus probables dans un sujet
 # sont souvent présents en même temps dans un document. Cependant, vu le faible nombre de sujets dans cette analyse, 
@@ -47,13 +49,13 @@ k_result %>%
   labs(x = "Semantic coherence",
        y = "Exclusivity",
        title = "Comparaison entre cohérence sémantique et exclusivité",
-       subtitle = "Le meilleur compromis semble être 13 ou 14")
+       subtitle = "Le meilleur compromis semble être 15")
 
-# En prenant en compte les deux graphiques, la solution à 14 sujets a été retenue comme meilleur compromis entre 
+# En prenant en compte les deux graphiques, la solution à 15 sujets a été retenue comme meilleur compromis entre 
 # les différentes valeurs diagnostiques
 
 topic_model <- k_result %>% 
-  filter(K == 14) %>% 
+  filter(K == 15) %>% 
   pull(topic_model) %>% 
   .[[1]]
 
@@ -87,7 +89,7 @@ gamma_terms <- td_gamma %>%
   mutate(topic = paste0("Topic ", topic),
          topic = reorder(topic, gamma))
 
-gamma_terms %>%
+gamma_plot <- gamma_terms %>%
   top_n(20, gamma) %>%
   ggplot(aes(topic, gamma, label = terms, fill = topic)) +
   geom_col(show.legend = FALSE) +
@@ -105,20 +107,20 @@ gamma_terms %>%
        title = "Sujets, par prévalence, dans le corpus de tweets",
        subtitle = "Accompagnés des mots principaux dans chaque sujet")
 
-gamma_terms
+ggsave(gamma_plot, 
+       file = "./output/plots/gamma_plot.png",
+       device = "png",
+       dpi = 300,
+       scale = 2,
+       bg = "white")
 
-tweets <- planning_full%>% 
-  left_join(select(named_communities, Label, modularity_class, outdegree), by = c("screen_name" = "Label")) %>%
-  filter(!grepl("RT",full_text),
-         !is.na(modularity_class),
-         outdegree >= 1) %>%
-  mutate(full_text = str_remove_all(full_text, remove_reg),
-         tweet_id = as.character(row_number()))
+tweets1 <- tweets %>%
+  mutate(tweet_id = as.character(tweet_id))
 
 topic_tweets <- list()
-for (i in 1:14) {
+for (i in 1:15) {
   topic_tweets[[i]] <- td_gamma %>%
     filter(topic == i) %>%
-    top_n(7, gamma) %>%
-    left_join(select(tweets, full_text, tweet_id), by = c ("document" = "tweet_id"))
+    top_n(10, gamma) %>%
+    left_join(select(tweets1, full_text, tweet_id), by = c ("document" = "tweet_id"))
 }
