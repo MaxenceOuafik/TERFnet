@@ -21,7 +21,7 @@ planning_users_full <- planning_users_full %>%
 
 
 planning_full <- cbind(planning_tweets_full, planning_users_full)%>%
-  select(1, 3, 4, 20, 25, 44:46, 48, 51, 52)
+  select(1, 3, 4, 20, 24, 25, 44:46, 48, 51, 52)
   
 
 rm(list = c("planning_tweets",
