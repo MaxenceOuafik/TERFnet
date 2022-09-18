@@ -1,0 +1,53 @@
+{
+  "type": "network",
+  "version": "1.0",
+  "data": "data.json",
+  "logo": {
+    "file": "",
+    "link": "",
+    "text": "Maxence Ouafik"
+  },
+  "text": {
+    "more": "Ce graphique représente les retweets générés lors de la polémique du planning familial. \nChaque noeud correspond à un utilisateur tandis que chaque lien correspond à un retweet. \nLes différents utilisateurs ont été répartis dans des communautés selon l\u0027algorithme de Louvain, permettant de voir les différents groupes composant ce réseau",
+    "intro": "Réseau de retweets autour de la polémique sur l\u0027affiche du planning familial représentant un homme enceint",
+    "title": "TERFnet"
+  },
+  "legend": {
+    "edgeLabel": "From",
+    "colorLabel": "Modularity Class",
+    "nodeLabel": "Label"
+  },
+  "features": {
+    "search": true,
+    "groupSelectorAttribute": "Communauté",
+    "hoverBehavior": "dim"
+  },
+  "informationPanel": {
+    "groupByEdgeDirection": false,
+    "imageAttribute": false
+  },
+  "sigma": {
+    "drawingProperties": {
+      "defaultEdgeType": "curve",
+      "defaultHoverLabelBGColor": "#002147",
+      "defaultLabelBGColor": "#ddd",
+      "activeFontStyle": "bold",
+      "defaultLabelColor": "#000",
+      "labelThreshold": 10,
+      "defaultLabelHoverColor": "#fff",
+      "fontStyle": "bold",
+      "hoverFontStyle": "bold",
+      "defaultLabelSize": 14
+    },
+    "graphProperties": {
+      "maxEdgeSize": 0.5,
+      "minEdgeSize": 0.2,
+      "minNodeSize": 1,
+      "maxNodeSize": 7
+    },
+    "mouseProperties": {
+      "maxRatio": 20,
+      "minRatio": 0.75
+    }
+  }
+}
