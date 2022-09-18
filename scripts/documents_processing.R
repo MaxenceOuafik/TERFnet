@@ -55,19 +55,34 @@ custom_swords <- c("planning",
                    "hommes",
                    "faut",
                    "pas",
-                   "même")
+                   "même",
+                   "affiche",
+                   "affiches",
+                   "femme",
+                   "femmes",
+                   "Mme",
+                   "enceint",
+                   "enceints",
+                   "très")
 
-remove_reg <- "&amp;|&lt;|&gt;"
+remove_reg <- '&amp;|&lt;|&gt;|[\"]'
 
-tidy_tweets <- planning_full%>% 
+titre_articles <- 'Élisabeth Borne, féministes, nous nous inquiétons de ce que devient le Planning familial'
+
+
+tweets <- planning_full%>% 
   left_join(select(named_communities, Label, modularity_class, outdegree), by = c("screen_name" = "Label")) %>%
   filter(!grepl("RT",full_text),
          !is.na(modularity_class),
          !grepl('withheld', full_text),
-         outdegree >= 1) %>%
+         outdegree >= 1,
+         lang == "fr") %>%
   mutate(full_text = str_remove_all(full_text, remove_reg),
+         full_text = str_remove_all(pattern = titre_articles, full_text),
          tweet_id = row_number()) %>%
-  distinct(full_text, .keep_all = TRUE) %>%
+  distinct(full_text, .keep_all = TRUE)
+
+tidy_tweets <- tweets  %>%
   unnest_tokens(word, full_text, token = "tweets") %>%
   filter(!word %in% tidy_swords,
          !word %in% custom_swords,
