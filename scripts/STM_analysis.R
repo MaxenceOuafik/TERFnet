@@ -1,7 +1,7 @@
 library(stm)
 library(furrr)
 # On commence par importer le modèle généré dans le script STM.R
-load("./output/models_evaluation.RData")
+models_evaluation <- readRDS("./output/models_evaluation.rds")
 
 # On calcule ensuite certaines mesures qui permettent d'évaluer les modèles
 heldout <- make.heldout(tidy_sparse)
@@ -32,7 +32,7 @@ k_result %>%
   labs(x = "K (number of topics)",
        y = NULL,
        title = "Diagnostics du modèle, par nombre de sujets",
-       subtitle = "Le nombre adéquat de sujets semble être 13-15")
+       subtitle = "Le nombre adéquat de sujets semble être aux alentours de 12-15")
 
 # La cohérence sémantique est une mesure qui est plus élevée lorsque les mots les plus probables dans un sujet
 # sont souvent présents en même temps dans un document. Cependant, vu le faible nombre de sujets dans cette analyse, 
@@ -49,13 +49,13 @@ k_result %>%
   labs(x = "Semantic coherence",
        y = "Exclusivity",
        title = "Comparaison entre cohérence sémantique et exclusivité",
-       subtitle = "Le meilleur compromis semble être 15")
+       subtitle = "Le meilleur compromis semble être 12")
 
-# En prenant en compte les deux graphiques, la solution à 15 sujets a été retenue comme meilleur compromis entre 
+# En prenant en compte les deux graphiques, la solution à 12 sujets a été retenue comme meilleur compromis entre 
 # les différentes valeurs diagnostiques
 
 topic_model <- k_result %>% 
-  filter(K == 15) %>% 
+  filter(K == 12) %>% 
   pull(topic_model) %>% 
   .[[1]]
 
@@ -118,7 +118,7 @@ tweets1 <- tweets %>%
   mutate(tweet_id = as.character(tweet_id))
 
 topic_tweets <- list()
-for (i in 1:15) {
+for (i in 1:12) {
   topic_tweets[[i]] <- td_gamma %>%
     filter(topic == i) %>%
     top_n(10, gamma) %>%

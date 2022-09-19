@@ -12,7 +12,7 @@ library(furrr)
 
 set.seed(5)
 plan(multisession)
-models_evaluation <- data_frame(K = c(10, 11, 12, 13, 14, 15)) %>%
+models_evaluation <- tibble(K = c(10, 11, 12, 13, 14, 15)) %>%
   mutate(topic_model = future_map(K, ~ stm(tidy_sparse,
                                            K = .,
                                            data = tidy_tweets %>% distinct(user, tweet_id, community) %>% arrange(community),
@@ -22,3 +22,4 @@ models_evaluation <- data_frame(K = c(10, 11, 12, 13, 14, 15)) %>%
                                   .options = furrr_options(seed = 5)))
 
 save(models_evaluation, file = "./output/models_evaluation.RData")
+saveRDS(models_evaluation, "./output/models_evaluation.rds")
