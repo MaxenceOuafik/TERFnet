@@ -6,6 +6,9 @@
 # En outre, l'algorithme de Louvain a été appliqué sur ces données afin de mettre en évidence 11 communautés. 
 # À ce stade de l'analyse, ces communautés sont simplement étiquetées de 0 à 11 et se trouvent dans modularity_class
 
+library(formattable)
+library(DT)
+library(htmlwidgets)
 requireNamespace("scales")
 
 exported_nodes <- read_csv("gephi/exported_nodes.csv", 
@@ -37,6 +40,8 @@ names(communities_list) <- 0:10
 # Après avoir inspecté les différentes communautés une à une, le nommage se fait en modifiant le niveau des facteurs 
 # des données non-nommées. 
 named_communities <- exported_nodes
+
+
 levels(named_communities$modularity_class) <- c("Militant·e·s féministes et LGBTQIA+", 
                                                 "Personnalités et groupes de gauche", 
                                                 "Divers gauches", 
@@ -48,13 +53,47 @@ levels(named_communities$modularity_class) <- c("Militant·e·s féministes et L
                                                 "Inclassable",
                                                 "Conspirationnistes identitaires",
                                                 "Rassemblement National")
+
+modularity_color <- c("#FFB0CD",
+                      "#FFB094",
+                      "#F3BF86",
+                      "#D8BFD0",
+                      "#FFC664",
+                      "#F3C7FF",
+                      "#CFDA6E",
+                      "#69E9C1",
+                      "#7DDFDD",
+                      "#9CDBFF",
+                      "#97E494")
+
 communities_summary <- named_communities %>%
   group_by(modularity_class) %>%
   summarise(members = n(),
             rt_community = sum(outdegree),
             tweets_community = sum(tweets)) %>%
-  mutate(pct_members = scales::percent(members/sum(members), accuracy = 0.1),
-         pct_rt = scales::percent(rt_community/sum(rt_community), accuracy = 0.1),
-         rrt = rt_community/tweets_community)
+  mutate("(%)" = scales::percent(members/sum(members), accuracy = 0.1),
+         "Retweets (%)" = scales::percent(rt_community/sum(rt_community), accuracy = 0.1),
+         "rRT" = round(rt_community/tweets_community, digits = 2),
+         "Color" = modularity_color) %>%
+  rename("Utilisateurs" = members,
+         "Retweets" = rt_community,
+         "Tweets" = tweets_community,
+         "Communauté" = modularity_class) %>%
+  relocate("(%)", .after = "Utilisateurs")
 
 
+community_DT <- as.datatable(formattable(communities_summary,
+                                         list("Utilisateurs" = color_bar (communities_summary$Color),
+                                              "Retweets" = color_bar (communities_summary$Color),
+                                              "Tweets" = color_bar (communities_summary$Color),
+                                              "rRT" = color_bar (communities_summary$Color),
+                                              "Retweets (%)" = FALSE,
+                                              "Color" = FALSE)),
+                             rownames = FALSE,
+                             options = list(
+                               columnDefs = list(list(className = 'dt-right', targets = 1:5)),
+                               paging = FALSE,
+                               searching = FALSE)
+                             )
+
+saveWidget(community_DT, "./output/comunity_DT.html")
