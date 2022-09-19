@@ -19,7 +19,7 @@ source("./scripts/login.R")
 source("./scripts/load_data.R")
 source("./scripts/tweets_data_preparation.R")
 source("./scripts/create_network_data.R")
-source("./scripts/community_analysis.R")
+source("./scripts/community_analysis.R", encoding = "UTF-8")
 source("./scripts/documents_processing.R")
 source("./scripts/STM_analysis.R")
 ```
