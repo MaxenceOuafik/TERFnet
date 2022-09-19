@@ -96,4 +96,8 @@ community_DT <- as.datatable(formattable(communities_summary,
                                searching = FALSE)
                              )
 
-saveWidget(community_DT, "./output/comunity_DT.html")
+saveWidget(community_DT, 
+           "./output/comunity_DT.html",
+           selfcontained = TRUE, 
+           libdir = NULL,
+           background = "white")
