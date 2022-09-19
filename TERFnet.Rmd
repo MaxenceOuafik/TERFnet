@@ -15,3 +15,7 @@ source("./scripts/tweets_data_preparation.R")
 source("./scripts/create_network_data.R")
 source("./scripts/community_analysis.R", encoding = "UTF-8")
 ```
+
+```{r}
+community_DT
+```
