@@ -1,4 +1,5 @@
 # Ce script permet de récupérer les données générées par le script "get_tweets.R" et sauvegardées au format .RData. 
+# Cela permet d'éviter de relancer la recherche, ce qui serait impossible au vu des limitations de l'API twitter
 
 
 

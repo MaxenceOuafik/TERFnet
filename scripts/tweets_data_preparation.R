@@ -1,3 +1,6 @@
+# Ce script permet de nettoyer et de combiner les données issues de Twitter afin de créer une table comportant uniquement
+# les données pertinentes des utilisateurs et des tweets, toutes recherches confondues
+
 library(tidyverse)
 planning_tweets_full <- planning_tweets %>%
   bind_rows(planning_tweets_new) %>%

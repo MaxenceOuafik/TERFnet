@@ -54,6 +54,7 @@ levels(named_communities$modularity_class) <- c("Militant·e·s féministes et L
                                                 "Conspirationnistes identitaires",
                                                 "Rassemblement National")
 
+# Pour la facilité de lecture, les codes couleurs de Gephi sont remis comme légende dans le tableau
 modularity_color <- c("#FFB0CD",
                       "#FFB094",
                       "#F3BF86",
@@ -82,6 +83,7 @@ communities_summary <- named_communities %>%
   relocate("(%)", .after = "Utilisateurs")
 
 
+# La table HTML est générée à partir de ce code
 community_DT <- as.datatable(formattable(communities_summary,
                                          list("Utilisateurs" = color_bar (communities_summary$Color),
                                               "Retweets" = color_bar (communities_summary$Color),
@@ -96,12 +98,13 @@ community_DT <- as.datatable(formattable(communities_summary,
                                searching = FALSE)
                              )
 
-saveWidget(community_DT, 
-           "./output/comunity_DT.html",
-           selfcontained = TRUE, 
-           libdir = NULL,
-           background = "white")
+# Pour Medium, les données de la table ont été exportées en format .csv afin d'être importées dans Airtable
 write.csv(communities_summary, 
           "./output/community_summaries.csv",
           fileEncoding = "UTF-8",
           row.names = F)
+
+rm(list = c("exported_nodes",
+            "top_5_nodes ",
+            "communities_list"))
+

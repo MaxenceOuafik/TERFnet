@@ -1,5 +1,5 @@
+# Enfin, ce code permet de créer les données ayant permis de générer le gif en incluant la chronologie des tweets à l'analyse
 library(lubridate)
-
 timeframe_nodes <- planning_full %>%
   select(screen_name, created_at) %>%
   mutate(date = as_datetime(created_at)) %>%

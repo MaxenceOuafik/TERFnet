@@ -1,3 +1,7 @@
+# À partir des données des utilisateurs et des retweets, ce script permet de générer deux fichiers .csv
+# Le premier, edgelist.csv, comprend une liste de toutes les connexions. 
+# Le second, nodes.csv, comprend une liste de tous les nœuds. 
+
 from <- list()
 for (i in 1:50264) {
   from[i] <- planning_full[["retweeted_status"]][[i]][["user"]][["screen_name"]]
