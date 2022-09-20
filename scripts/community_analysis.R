@@ -71,8 +71,8 @@ communities_summary <- named_communities %>%
   summarise(members = n(),
             rt_community = sum(outdegree),
             tweets_community = sum(tweets)) %>%
-  mutate("(%)" = scales::percent(members/sum(members), accuracy = 0.1),
-         "Retweets (%)" = scales::percent(rt_community/sum(rt_community), accuracy = 0.1),
+  mutate("(%)" = members/sum(members),
+         "Retweets (%)" = rt_community/sum(rt_community),
          "rRT" = round(rt_community/tweets_community, digits = 2),
          "Color" = modularity_color) %>%
   rename("Utilisateurs" = members,
@@ -101,3 +101,7 @@ saveWidget(community_DT,
            selfcontained = TRUE, 
            libdir = NULL,
            background = "white")
+write.csv(communities_summary, 
+          "./output/community_summaries.csv",
+          fileEncoding = "UTF-8",
+          row.names = F)
