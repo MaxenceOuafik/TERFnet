@@ -7,3 +7,4 @@ scripts/login.R
 scripts/documents_processing.R
 scripts/STM.R
 scripts/STM_analysis.R
+TERFnet_cache
